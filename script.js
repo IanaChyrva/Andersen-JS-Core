@@ -53,11 +53,9 @@ function task2() {
 const isEqual = (firstObj, secondObj) => {
   const arr1 = [...Object.keys(firstObj), ...Object.values(firstObj)];
   const arr2 = [...Object.keys(secondObj), ...Object.values(secondObj)];
-
   if (arr1.length !== arr2.length) {
     return false;
   }
-
   for (let i = 0; i <= arr1.length; i++) {
     if (arr1[i] !== arr2[i]) {
       return false;
@@ -80,7 +78,6 @@ const isEmpty = (object) => {
   const arrFromObj = Object.values(object).filter(
     (item) => item || item === 0 || item === false
   );
-
   return !arrFromObj.length;
 };
 
@@ -88,3 +85,11 @@ const data4 = { a: 1, b: undefined };
 const data5 = { a: undefined };
 console.log(isEmpty(data4));
 console.log(isEmpty(data5));
+
+// Task 3
+const makePairs = (object) => {
+  return Object.entries(object);
+};
+
+const data6 = { a: 1, b: 2 };
+console.log(makePairs(data6));
