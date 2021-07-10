@@ -73,3 +73,18 @@ const data3 = { a: 1, b: 2 };
 
 console.log(isEqual(data, data2));
 console.log(isEqual(data, data3));
+
+// Task 2
+
+const isEmpty = (object) => {
+  const arrFromObj = Object.values(object).filter(
+    (item) => item || item === 0 || item === false
+  );
+
+  return !arrFromObj.length;
+};
+
+const data4 = { a: 1, b: undefined };
+const data5 = { a: undefined };
+console.log(isEmpty(data4));
+console.log(isEmpty(data5));
