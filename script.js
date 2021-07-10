@@ -44,5 +44,5 @@ function task2() {
   console.log(`Ответ: ${Number(input1) + Number(input2)}, ${input1 / input2}.`);
 }
 
-task2();
+// task2();
 // Uncomment the line above to run function
