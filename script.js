@@ -46,3 +46,42 @@ function task2() {
 
 // task2();
 // Uncomment the line above to run function
+
+// Lesson-2
+// Task 1
+
+const isEqual = (firstObj, secondObj) => {
+  const arr1 = Object.keys(firstObj);
+  const arr2 = Object.keys(secondObj);
+
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  return !arr1.filter((key) => firstObj[key] !== secondObj[key]).length;
+};
+
+const data = { a: 1, b: 1 };
+const data2 = { a: 1, b: 1 };
+const data3 = { a: 1, b: 2 };
+
+console.log(isEqual(data, data2));
+console.log(isEqual(data, data3));
+
+// Task 2
+
+const isEmpty = (object) =>
+  !Object.values(object).filter((item) => item || item === 0 || item === false)
+    .length;
+
+const data4 = { a: 1, b: undefined };
+const data5 = { a: undefined };
+console.log(isEmpty(data4));
+console.log(isEmpty(data5));
+
+// Task 3
+const makePairs = (object) =>
+  Object.keys(object).map((key) => [key, object[key]]);
+
+const data6 = { a: 1, b: 2 };
+console.log(makePairs(data6));
