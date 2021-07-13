@@ -83,3 +83,25 @@ function lessonTwo() {
   const data6 = { a: 1, b: 2 };
   console.log(makePairs(data6));
 }
+
+function lessonThree() {
+  function palindrome(str) {
+    const arrayFromStr = str.toLowerCase().split('');
+    const filteredArrayOfLetters = arrayFromStr.filter(
+      (letter) => letter >= 'a' && letter <= 'z'
+    );
+
+    return (
+      filteredArrayOfLetters.join('') ===
+      filteredArrayOfLetters.reverse().join('')
+    );
+  }
+
+  palindrome('a ,nna');
+  palindrome('Abba');
+  palindrome(' s,tr');
+  palindrome('A man, a plan, a canal. Panama');
+  palindrome('My age is 0, 0 si ega ym.');
+}
+
+lessonThree();
