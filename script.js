@@ -102,6 +102,33 @@ function lessonThree() {
   palindrome(' s,tr');
   palindrome('A man, a plan, a canal. Panama');
   palindrome('My age is 0, 0 si ega ym.');
+
+  const vowels = ['a', 'e', 'i', 'o', 'u'];
+  function vowelsQty(str) {
+    let count = 0;
+    const arrayFromStr = str.toLowerCase().split('');
+
+    arrayFromStr.forEach((letter) => {
+      if (vowels.includes(letter)) {
+        count++;
+      }
+    });
+    return count;
+  }
+  vowelsQty('some test string');
+
+  const nums = [10, 11, 12, 13, 14, 15, 16, 17, 18];
+  Array.prototype.myFilter = function (callback) {
+    return this.reduce((result, item, i, arr) => {
+      if (callback(item, i, arr)) {
+        result.push(item);
+      }
+      return result;
+    }, []);
+  };
+
+  const even = (element, index, array) => element % 2 === 0;
+  const evenNumbers = nums.myFilter(even);
 }
 
 lessonThree();
