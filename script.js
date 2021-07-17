@@ -147,6 +147,25 @@ function lesson4() {
   };
 
   const result = objectHell(testString);
+
+  const log100 = () => console.log(100);
+
+  const createDebounceFunction = (callback, delay) => {
+    let timerId;
+
+    return function () {
+      clearTimeout(timerId);
+      timerId = setTimeout(() => {
+        callback();
+      }, delay);
+    };
+  };
+
+  const debounceLog100 = createDebounceFunction(log100, 1000);
+
+  debounceLog100();
+  setTimeout(debounceLog100, 200);
+  setTimeout(debounceLog100, 400);
 }
 
 lesson4();
