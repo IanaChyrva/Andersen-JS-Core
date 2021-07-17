@@ -130,5 +130,3 @@ function lessonThree() {
   const even = (element, index, array) => element % 2 === 0;
   const evenNumbers = nums.myFilter(even);
 }
-
-lessonThree();
