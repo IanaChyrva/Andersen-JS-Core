@@ -166,6 +166,30 @@ function lesson4() {
   debounceLog100();
   setTimeout(debounceLog100, 200);
   setTimeout(debounceLog100, 400);
+
+  Function.prototype.myBind = function (context, ...args1) {
+    const fn = this;
+
+    return function (...args2) {
+      return fn.apply(context, [...args1, ...args2]);
+    };
+  };
+
+  const car = {
+    make: 'Volvo',
+  };
+
+  function showThis(model, country) {
+    return `${model} is manufactured by ${this.make} in ${country}`;
+  }
+
+  const result1 = showThis.myBind(car);
+  const result2 = showThis.myBind(car, 'V40');
+  const result3 = showThis.myBind(car, 'V40', 'Sweden');
+
+  console.log(result1('V40', 'Sweden'));
+  console.log(result2('Sweden'));
+  console.log(result3());
 }
 
 lesson4();
