@@ -130,3 +130,23 @@ function lessonThree() {
   const even = (element, index, array) => element % 2 === 0;
   const evenNumbers = nums.myFilter(even);
 }
+
+function lesson4() {
+  const testString = 'a.b.c.d.e';
+
+  const objectHell = (string) => {
+    const arrFromStr = string.split('.');
+    const resultObj = {};
+
+    arrFromStr.reduce(
+      (acc, item, i) =>
+        i === arrFromStr.length - 1 ? (acc[item] = null) : (acc[item] = {}),
+      resultObj
+    );
+    return resultObj;
+  };
+
+  const result = objectHell(testString);
+}
+
+lesson4();
