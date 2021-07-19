@@ -130,3 +130,56 @@ function lessonThree() {
   const even = (element, index, array) => element % 2 === 0;
   const evenNumbers = nums.myFilter(even);
 }
+
+function lesson4() {
+  const testString = 'a.b.c.d.e';
+
+  const objectHell = (string) =>
+    string.split('.').reduceRight((acc, item) => ({ [item]: acc }), null);
+
+  console.log(objectHell(testString));
+
+  const log100 = (num) => console.log(num);
+  const createDebounceFunction = (callback, delay) => {
+    let timerId;
+    return function (...args) {
+      clearTimeout(timerId);
+      timerId = setTimeout(() => {
+        callback.apply(this, args);
+      }, delay);
+    };
+  };
+
+  const debounceLog100 = createDebounceFunction(log100, 1000);
+
+  debounceLog100(1);
+  setTimeout(() => debounceLog100(2), 100);
+  setTimeout(() => debounceLog100(3), 200);
+  setTimeout(() => debounceLog100(4), 1200);
+
+  Function.prototype.myBind = function (context, ...args1) {
+    const fn = this;
+
+    return function (...args2) {
+      return fn.apply(context, [...args1, ...args2]);
+    };
+  };
+
+  const car = {
+    make: 'Volvo',
+  };
+
+  function showThis(model, country) {
+    return `${model} is manufactured by ${this.make} in ${country}`;
+  }
+
+  const result1 = showThis.myBind(car);
+  const result2 = showThis.myBind(car, 'V40');
+  const result3 = showThis.myBind(car, 'V40', 'Sweden');
+
+  console.log(result1('V40', 'Sweden'));
+  console.log(result2('Sweden'));
+  console.log(result3());
+}
+
+lesson4();
