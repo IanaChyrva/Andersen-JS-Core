@@ -134,31 +134,12 @@ function lessonThree() {
 function lesson4() {
   const testString = 'a.b.c.d.e';
 
-  const objectHell = (string) => {
-    const arrFromStr = string.split('.');
-    const resultObj = {};
+  const objectHell = (string) =>
+    string.split('.').reduceRight((acc, item) => ({ [item]: acc }), null);
 
-    arrFromStr.reduce(
-      (acc, item, i) =>
-        i === arrFromStr.length - 1 ? (acc[item] = null) : (acc[item] = {}),
-      resultObj
-    );
-    return resultObj;
-  };
   console.log(objectHell(testString));
 
-  const objectHell2 = (string) => {
-    const arrFromStr = string.split('.');
-    const start = arrFromStr.splice(-1);
-
-    return arrFromStr.reduceRight((acc, item) => ({ [item]: acc }), {
-      [start]: null,
-    });
-  };
-  console.log(objectHell2(testString));
-
   const log100 = (num) => console.log(num);
-
   const createDebounceFunction = (callback, delay) => {
     let timerId;
     return function (...args) {
