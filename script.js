@@ -145,27 +145,36 @@ function lesson4() {
     );
     return resultObj;
   };
+  console.log(objectHell(testString));
 
-  const result = objectHell(testString);
+  const objectHell2 = (string) => {
+    const arrFromStr = string.split('.');
+    const start = arrFromStr.splice(-1);
 
-  const log100 = () => console.log(100);
+    return arrFromStr.reduceRight((acc, item) => ({ [item]: acc }), {
+      [start]: null,
+    });
+  };
+  console.log(objectHell2(testString));
+
+  const log100 = (num) => console.log(num);
 
   const createDebounceFunction = (callback, delay) => {
     let timerId;
-
-    return function () {
+    return function (...args) {
       clearTimeout(timerId);
       timerId = setTimeout(() => {
-        callback();
+        callback.apply(this, args);
       }, delay);
     };
   };
 
   const debounceLog100 = createDebounceFunction(log100, 1000);
 
-  debounceLog100();
-  setTimeout(debounceLog100, 200);
-  setTimeout(debounceLog100, 400);
+  debounceLog100(1);
+  setTimeout(() => debounceLog100(2), 100);
+  setTimeout(() => debounceLog100(3), 200);
+  setTimeout(() => debounceLog100(4), 1200);
 
   Function.prototype.myBind = function (context, ...args1) {
     const fn = this;
