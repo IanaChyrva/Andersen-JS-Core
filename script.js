@@ -182,4 +182,72 @@ function lesson4() {
   console.log(result3());
 }
 
-lesson4();
+// lesson4();
+
+function lesson5() {
+  // Первый случай
+  // 1. 2 слушателя события click являются асинхронными, они обрабатываются WebAPI.
+  // // // 2. При клике WebAPI обработал первого слушателя и добавил коллбек в очередь callback queque. Так же обработал второго слушателя и тоже добавил коллбек из него в callback queque. То есть сейчас в очереди ждут 2 коллбека из слушателей события.
+  // 3. Stack пустой, поэтому туда попадает первый коллбек.
+  // // 4. Интерпретатор встречает микрозадачу promise. Promise перемещается в WebAPI, обрабатывается там и console.log('Microtask 1') попадает в очередь микрозадач.
+  // 5. В стеке появляется console.log('Listener 1'). Код выполняется и удаляется из стека.
+  // 6. Коллбек первого слушателя завершился и удаляется из стека.
+  // // 7. Так как есть еще очередь микрозад, в которой ждет код console.log('Microtask 1'), то event loop переносит console.log('Microtask 1') в стек. Код выполняется и стек очищается.
+  // 8. Теперь event loop может приступить к коллбеку второго слушателя.
+  // 9. Промис обрабатывается WebAPI и код console.log('Microtask 2')) попадает в очередь микрозад.
+  // 10. Код console.log('Listener 2') попадает в стек и выполняется.
+  // 11. Коллбек завершился и стек очищается.
+  // 12. Код из очереди микрозад попадает в стек. Код выполняется, стек очищается.
+  // Вывод: 'Listener 1', 'Microtask 1', 'Listener 2', 'Microtask 2'
+
+  // Второй случай
+  // 1. Запускается код button.click() и кладется в стек.
+  // 2. В WebAPI попадает код двух слушателей. обрабатывается и попадает в очередь callback queque.
+  // 3. В стек кладется коллбек первого слушателя.
+  // 4. Интерпретатор встречает микрозадачу promise. Promise перемещается в WebAPI, обрабатывается там и console.log('Microtask 1') попадает в очередь микрозадач.
+  // 5. В стеке появляется console.log('Listener 1'). Код выполняется и удаляется из стека.
+  // 6. Коллбек первого слушателя завершился и удаляется из стека. Но стек не пуст, там остался вызов клика  button.click().
+  // 7. Поэтому код event loop кладет коллбек второго слушателя в стек.
+  // 8. Код доходит до промиса, передает его в WebAPI. Тот обрабатывает промис и кладет console.log('Microtask 2') в очередь микрозад, где уже ждет первая микрозадача.
+  // 9. Интерпретатор доходит до console.log('Listener 2'), который переносится в стек и выполняется.
+  // 10. Коллбек второго слушателя завершился и удаляется из стека.
+  // 11. Наконец сначала одна задача переносится в стек и выполняется, а затем вторая.
+  // 12. button.click() завершился и удаляется из стека.
+  // Вывод: 'Listener 1', 'Listener 2', Microtask 1', 'Microtask 2'
+
+  const urls = [
+    'https://www.url-1.com/',
+    'https://www.url-2.com/',
+    'https://www.url-3.com/',
+  ];
+
+  function fakeRequest(url) {
+    return new Promise((resolve) => {
+      const delayTime = Math.floor(Math.random() * 10000) + 1;
+
+      setTimeout(() => resolve(url), 1000);
+    });
+  }
+
+  function resolveUrlsArray(urls) {
+    const promises = urls.map((url) => fakeRequest(url));
+    const resultArray = [];
+
+    return new Promise((resolve, reject) => {
+      promises.forEach((promise) =>
+        promise
+          .then((res) => {
+            resultArray.push(res);
+            if (resultArray.length === promises.length) {
+              resolve(resultArray);
+            }
+          })
+          .catch((err) => reject(err))
+      );
+    });
+  }
+
+  resolveUrlsArray(urls).then((result) => console.log(result));
+}
+
+lesson5();
