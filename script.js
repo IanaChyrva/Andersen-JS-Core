@@ -232,16 +232,16 @@ function lesson5() {
     const resultArray = [];
 
     return new Promise((resolve, reject) => {
-      fakeRequest(urls)
-        .then((response) => {
-          response.forEach((url) => {
-            resultArray.push(url);
+      urls.forEach((url) =>
+        fakeRequest(url)
+          .then((result) => {
+            resultArray.push(result);
             if (resultArray.length === urls.length) {
               resolve(resultArray);
             }
-          });
-        })
-        .catch((err) => reject(err));
+          })
+          .catch((err) => reject(err))
+      );
     });
   }
 
