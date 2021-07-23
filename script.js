@@ -248,4 +248,163 @@ function lesson5() {
   resolveUrlsArray(urls).then((result) => console.log(result));
 }
 
-lesson5();
+function lesson6() {
+  function functionalInheritance() {
+    function User(name, isAdmin = false) {
+      this.name = name;
+      this.isAdmin = isAdmin;
+
+      this.sayName = function () {
+        return this.name;
+      };
+
+      this.setAdminRights = function () {
+        return this.isAdmin;
+      };
+    }
+
+    function Admin() {
+      User.apply(this, arguments);
+      this.isAdmin = true;
+
+      this.sayName = function () {
+        return `User name: ${this.name}`;
+      };
+
+      let canEdit = this.setAdminRights;
+      this.setAdminRights = function () {
+        canEdit.call(this);
+        return `${this.name} has rights to edit`;
+      };
+
+      this.location = function (city) {
+        this.city = city;
+        return `${this.name} is from ${city}`;
+      };
+    }
+
+    function DefaultUser() {
+      User.apply(this, arguments);
+
+      this.sayName = function () {
+        return `User name: ${this.name}`;
+      };
+
+      let canEdit = this.setAdminRights;
+      this.setAdminRights = function () {
+        canEdit.call(this);
+        return `${this.name} has no rights to edit`;
+      };
+
+      this.location = function (city) {
+        this.city = city;
+        return `${this.name} is from ${city}`;
+      };
+    }
+  }
+
+  function prototypeInheritance() {
+    function User(name, isAdmin = false) {
+      this.name = name;
+      this.isAdmin = isAdmin;
+    }
+
+    User.prototype.sayName = function () {
+      return this.name;
+    };
+    User.prototype.setAdminRights = function () {
+      return this.isAdmin;
+    };
+
+    function Admin(name) {
+      this.name = name;
+      this.isAdmin = true;
+    }
+    Admin.prototype = Object.create(User.prototype);
+    Admin.prototype.sayName = function () {
+      return `User name: ${User.prototype.sayName.call(this)}`;
+    };
+    Admin.prototype.setAdminRights = function () {
+      return `${this.name} has rights to edit`;
+    };
+    Admin.prototype.location = function (city) {
+      this.city = city;
+      return `${this.name} is from ${city}`;
+    };
+
+    function DefaultUser(name) {
+      this.name = name;
+      this.isAdmin = false;
+    }
+    DefaultUser.prototype = Object.create(User.prototype);
+    DefaultUser.prototype.sayName = function () {
+      return `User name: ${User.prototype.sayName.call(this)}`;
+    };
+    DefaultUser.prototype.setAdminRights = function () {
+      return `${this.name} has no rights to edit`;
+    };
+    DefaultUser.prototype.location = function (city) {
+      this.city = city;
+      return `${this.name} is from ${city}`;
+    };
+  }
+
+  function es6Inheritance() {
+    class User {
+      constructor(name) {
+        this.name = name;
+        this.isAdmin = false;
+      }
+
+      sayName() {
+        return this.name;
+      }
+
+      setAdminRights() {
+        return this.isAdmin;
+      }
+    }
+
+    class Admin extends User {
+      constructor(name) {
+        super(name);
+        this.isAdmin = true;
+      }
+
+      sayName() {
+        return `User name: ${super.sayName()}`;
+      }
+
+      setAdminRights() {
+        return `${this.name} has rights to edit`;
+      }
+
+      location(city) {
+        this.city = city;
+        return `${this.name} is from ${city}`;
+      }
+    }
+
+    class DefaultUser extends User {
+      constructor(name) {
+        super(name);
+      }
+
+      sayName() {
+        return `User name: ${super.sayName()}`;
+      }
+
+      setAdminRights() {
+        this.isAdmin = false;
+        return `${this.name} has no rights to edit`;
+      }
+
+      location(city) {
+        this.city = city;
+        return `${this.name} is from ${city}`;
+      }
+    }
+  }
+}
+
+lesson6();
