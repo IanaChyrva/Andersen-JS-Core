@@ -250,8 +250,9 @@ function lesson5() {
 
 function lesson6() {
   function functionalInheritance() {
-    function User(name, isAdmin = false) {
+    function User(name, city, isAdmin = false) {
       this.name = name;
+      this.city = city;
       this.isAdmin = isAdmin;
 
       this.sayName = function () {
@@ -271,15 +272,14 @@ function lesson6() {
         return `User name: ${this.name}`;
       };
 
-      let canEdit = this.setAdminRights;
+      const canEdit = this.setAdminRights;
       this.setAdminRights = function () {
         canEdit.call(this);
         return `${this.name} has rights to edit`;
       };
 
-      this.location = function (city) {
-        this.city = city;
-        return `${this.name} is from ${city}`;
+      this.location = function () {
+        return `${this.name} is from ${this.city}`;
       };
     }
 
@@ -290,22 +290,22 @@ function lesson6() {
         return `User name: ${this.name}`;
       };
 
-      let canEdit = this.setAdminRights;
+      const canEdit = this.setAdminRights;
       this.setAdminRights = function () {
         canEdit.call(this);
         return `${this.name} has no rights to edit`;
       };
 
-      this.location = function (city) {
-        this.city = city;
-        return `${this.name} is from ${city}`;
+      this.location = function () {
+        return `${this.name} is from ${this.city}`;
       };
     }
   }
 
   function prototypeInheritance() {
-    function User(name, isAdmin = false) {
+    function User(name, city, isAdmin = false) {
       this.name = name;
+      this.city = city;
       this.isAdmin = isAdmin;
     }
 
@@ -316,43 +316,45 @@ function lesson6() {
       return this.isAdmin;
     };
 
-    function Admin(name) {
-      this.name = name;
+    function Admin() {
+      User.apply(this, arguments);
       this.isAdmin = true;
     }
     Admin.prototype = Object.create(User.prototype);
+    Admin.prototype.constructor = Admin;
+
     Admin.prototype.sayName = function () {
       return `User name: ${User.prototype.sayName.call(this)}`;
     };
     Admin.prototype.setAdminRights = function () {
       return `${this.name} has rights to edit`;
     };
-    Admin.prototype.location = function (city) {
-      this.city = city;
-      return `${this.name} is from ${city}`;
+    Admin.prototype.location = function () {
+      return `${this.name} is from ${this.city}`;
     };
 
-    function DefaultUser(name) {
-      this.name = name;
-      this.isAdmin = false;
+    function DefaultUser() {
+      User.apply(this, arguments);
     }
     DefaultUser.prototype = Object.create(User.prototype);
+    DefaultUser.prototype.constructor = DefaultUser;
+
     DefaultUser.prototype.sayName = function () {
       return `User name: ${User.prototype.sayName.call(this)}`;
     };
     DefaultUser.prototype.setAdminRights = function () {
       return `${this.name} has no rights to edit`;
     };
-    DefaultUser.prototype.location = function (city) {
-      this.city = city;
-      return `${this.name} is from ${city}`;
+    DefaultUser.prototype.location = function () {
+      return `${this.name} is from ${this.city}`;
     };
   }
 
   function es6Inheritance() {
     class User {
-      constructor(name) {
+      constructor(name, city) {
         this.name = name;
+        this.city = city;
         this.isAdmin = false;
       }
 
@@ -366,8 +368,8 @@ function lesson6() {
     }
 
     class Admin extends User {
-      constructor(name) {
-        super(name);
+      constructor(name, city) {
+        super(name, city);
         this.isAdmin = true;
       }
 
@@ -379,15 +381,14 @@ function lesson6() {
         return `${this.name} has rights to edit`;
       }
 
-      location(city) {
-        this.city = city;
-        return `${this.name} is from ${city}`;
+      location() {
+        return `${this.name} is from ${this.city}`;
       }
     }
 
     class DefaultUser extends User {
-      constructor(name) {
-        super(name);
+      constructor(name, city) {
+        super(name, city);
       }
 
       sayName() {
@@ -399,9 +400,8 @@ function lesson6() {
         return `${this.name} has no rights to edit`;
       }
 
-      location(city) {
-        this.city = city;
-        return `${this.name} is from ${city}`;
+      location() {
+        return `${this.name} is from ${this.city}`;
       }
     }
   }
