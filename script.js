@@ -413,20 +413,18 @@ function lesson7() {
   const KEY = '3e660896ff29654e3f0bcefea663bf1a';
 
   function fetchWeather(city) {
-    fetch(
-      `https://api.openweathermap.org/data/2.5/onecall?lat=${city.coord.lat}&lon=${city.coord.lon}&units=metric&appid=${KEY}`
-    )
+    const weatherUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${city.coord.lat}&lon=${city.coord.lon}&units=metric&appid=${KEY}`;
+
+    fetch(weatherUrl)
       .then((response) => response.json())
       .then((weatherData) => {
-        weatherData.daily.forEach((weatherForDay, index) => {
-          if (index < 4) {
-            console.log(
-              `${city.name} weather forecast for day ${index + 1}: 
+        weatherData.daily.slice(0, 4).forEach((weatherForDay, index) => {
+          console.log(
+            `${city.name} weather forecast for day ${index + 1}: 
             maximum temperature: ${weatherForDay.temp.max}\xB0;
             minimum temperature: ${weatherForDay.temp.min}\xB0;
             wind speed: ${weatherForDay.wind_speed} metre/sec.`
-            );
-          }
+          );
         });
       })
       .catch((err) => console.log(err));
@@ -449,8 +447,7 @@ function lesson7() {
 
   fetchWeather(Cherkassy);
 
-  const citiesData = fetch('/city.list.json');
-  citiesData
+  fetch('/city.list.json')
     .then((response) => response.json())
     .then((data) => {
       fetchWeather(randomCity(data));
