@@ -408,3 +408,50 @@ function lesson6() {
 }
 
 lesson6();
+
+function lesson7() {
+  const KEY = '3e660896ff29654e3f0bcefea663bf1a';
+
+  function fetchWeather(city) {
+    const weatherUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${city.coord.lat}&lon=${city.coord.lon}&units=metric&appid=${KEY}`;
+
+    fetch(weatherUrl)
+      .then((response) => response.json())
+      .then((weatherData) => {
+        weatherData.daily.slice(0, 4).forEach((weatherForDay, index) => {
+          console.log(
+            `${city.name} weather forecast for day ${index + 1}: 
+            maximum temperature: ${weatherForDay.temp.max}\xB0;
+            minimum temperature: ${weatherForDay.temp.min}\xB0;
+            wind speed: ${weatherForDay.wind_speed} metre/sec.`
+          );
+        });
+      })
+      .catch((err) => console.log(err));
+  }
+
+  function randomCity(array) {
+    return array[Math.floor(Math.random() * array.length)];
+  }
+
+  const Cherkassy = {
+    id: 710791,
+    name: 'Cherkasy',
+    state: '',
+    country: 'UA',
+    coord: {
+      lon: 32.062069,
+      lat: 49.428539,
+    },
+  };
+
+  fetchWeather(Cherkassy);
+
+  fetch('/city.list.json')
+    .then((response) => response.json())
+    .then((data) => {
+      fetchWeather(randomCity(data));
+    });
+}
+
+lesson7();
