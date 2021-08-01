@@ -454,4 +454,162 @@ function lesson7() {
     });
 }
 
-lesson7();
+// lesson7();
+
+function lesson8() {
+  const calculator = document.querySelector('.calculator');
+  const output = document.querySelector('.output');
+  const calculationOutput = document.querySelector('.calculation');
+  const journalOutput = document.querySelector('ol');
+
+  const calculatorData = {
+    displayValue: '0',
+    firstOperand: null,
+    waitingForSecondOperand: false,
+    operator: null,
+    calculationStr: '',
+    result: '',
+    calculationsLog: [],
+    resultsLog: [],
+  };
+
+  function inputNumber(num) {
+    if (calculatorData.waitingForSecondOperand) {
+      calculatorData.displayValue = num;
+      calculatorData.waitingForSecondOperand = false;
+    } else {
+      calculatorData.displayValue =
+        calculatorData.displayValue === '0'
+          ? num
+          : calculatorData.displayValue + num;
+    }
+    updateDisplay();
+  }
+
+  function checkDot(dot) {
+    if (calculatorData.waitingForSecondOperand) {
+      calculatorData.displayValue = '0.';
+      calculatorData.waitingForSecondOperand = false;
+      return;
+    }
+    if (!calculatorData.displayValue.includes(dot)) {
+      calculatorData.displayValue += dot;
+    }
+    updateDisplay();
+  }
+
+  function handleOperator(nextOperator) {
+    const inputValue = Number(calculatorData.displayValue);
+
+    if (calculatorData.operator && calculatorData.waitingForSecondOperand) {
+      calculatorData.operator = nextOperator;
+      return;
+    }
+
+    if (calculatorData.firstOperand === null && !isNaN(inputValue)) {
+      calculatorData.firstOperand = inputValue;
+    } else if (calculatorData.operator) {
+      const result = calculate(
+        calculatorData.firstOperand,
+        inputValue,
+        calculatorData.operator
+      );
+      calculatorData.result = result;
+      calculatorData.displayValue = result;
+      calculatorData.firstOperand = result;
+    }
+
+    calculatorData.waitingForSecondOperand = true;
+    calculatorData.operator = nextOperator;
+    updateDisplay();
+  }
+
+  function calculate(firstNum, secondNum, operator) {
+    if (operator === '+') {
+      return firstNum + secondNum;
+    } else if (operator === '-') {
+      return firstNum - secondNum;
+    } else if (operator === '*') {
+      return firstNum * secondNum;
+    } else if (operator === '/') {
+      return firstNum / secondNum;
+    }
+    return secondNum;
+  }
+
+  function updateDisplay() {
+    output.innerText = calculatorData.displayValue;
+  }
+
+  function reset() {
+    calculatorData.displayValue = '0';
+    calculatorData.firstOperand = null;
+    calculatorData.waitingForSecondOperand = false;
+    calculatorData.operator = null;
+    calculationOutput.innerText = '';
+    calculatorData.calculationStr = '';
+    calculatorData.result = '';
+  }
+
+  function calculationDisplay(target) {
+    calculatorData.calculationStr += target.innerText.replace('=', '');
+    calculationOutput.innerText = calculatorData.calculationStr;
+  }
+
+  function handleEqual() {
+    if (calculatorData.calculationStr !== '=' && calculatorData.result !== '') {
+      calculatorData.calculationsLog.push(calculatorData.calculationStr);
+      calculatorData.resultsLog.push(calculatorData.result);
+    }
+    reset();
+  }
+
+  function updateJournal() {
+    calculatorData.calculationsLog.forEach((log, index) => {
+      journalOutput.innerHTML += `
+        <li><span>${log}</span> = <span>${calculatorData.resultsLog[index]}</span></li>
+    `;
+    });
+  }
+
+  updateDisplay();
+
+  calculator.addEventListener('click', (e) => {
+    const { target } = e;
+    const { innerText: btnValue } = target;
+
+    if (!target.classList.contains('calc__btn')) return;
+
+    if (target.classList.contains('number')) {
+      inputNumber(btnValue);
+    }
+
+    if (
+      target.classList.contains('operator') ||
+      target.classList.contains('number')
+    ) {
+      calculationDisplay(target);
+    }
+
+    if (target.classList.contains('operator')) {
+      handleOperator(btnValue);
+    }
+
+    if (target.classList.contains('decimalDot')) {
+      checkDot(btnValue);
+    }
+
+    if (target.classList.contains('reset')) {
+      reset();
+      updateDisplay();
+    }
+
+    if (target.classList.contains('equal')) {
+      journalOutput.innerText = '';
+      handleEqual();
+      updateJournal();
+    }
+  });
+}
+
+lesson8();
