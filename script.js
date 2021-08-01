@@ -473,27 +473,17 @@ function lesson8() {
     resultsLog: [],
   };
 
-  function inputNumber(num) {
+  function appendNumber(number) {
+    if (number === '.' && calculatorData.displayValue.includes('.')) return;
+
     if (calculatorData.waitingForSecondOperand) {
-      calculatorData.displayValue = num;
+      calculatorData.displayValue = number;
       calculatorData.waitingForSecondOperand = false;
     } else {
       calculatorData.displayValue =
         calculatorData.displayValue === '0'
-          ? num
-          : calculatorData.displayValue + num;
-    }
-    updateDisplay();
-  }
-
-  function checkDot(dot) {
-    if (calculatorData.waitingForSecondOperand) {
-      calculatorData.displayValue = '0.';
-      calculatorData.waitingForSecondOperand = false;
-      return;
-    }
-    if (!calculatorData.displayValue.includes(dot)) {
-      calculatorData.displayValue += dot;
+          ? number
+          : calculatorData.displayValue + number;
     }
     updateDisplay();
   }
@@ -581,22 +571,13 @@ function lesson8() {
     if (!target.classList.contains('calc__btn')) return;
 
     if (target.classList.contains('number')) {
-      inputNumber(btnValue);
-    }
-
-    if (
-      target.classList.contains('operator') ||
-      target.classList.contains('number')
-    ) {
+      appendNumber(btnValue);
       calculationDisplay(target);
     }
 
     if (target.classList.contains('operator')) {
+      calculationDisplay(target);
       handleOperator(btnValue);
-    }
-
-    if (target.classList.contains('decimalDot')) {
-      checkDot(btnValue);
     }
 
     if (target.classList.contains('reset')) {
