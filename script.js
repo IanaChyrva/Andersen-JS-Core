@@ -454,4 +454,152 @@ function lesson7() {
     });
 }
 
-lesson7();
+// lesson7();
+
+function lesson8() {
+  const calculator = document.querySelector('.calculator');
+  const output = document.querySelector('.output');
+  const calculationOutput = document.querySelector('.calculation');
+  const journalOutput = document.querySelector('ol');
+
+  const calculatorData = {
+    displayValue: '0',
+    firstOperand: null,
+    waitingForSecondOperand: false,
+    operator: null,
+    calculationStr: '',
+    result: '',
+    calculationsLog: [],
+    resultsLog: [],
+  };
+
+  function appendNumber(number) {
+    if (number === '.' && calculatorData.displayValue.includes('.')) return;
+
+    if (calculatorData.waitingForSecondOperand) {
+      calculatorData.displayValue = number;
+      calculatorData.waitingForSecondOperand = false;
+    } else {
+      calculatorData.displayValue =
+        calculatorData.displayValue === '0'
+          ? number
+          : calculatorData.displayValue + number;
+    }
+    updateDisplay();
+  }
+
+  function handleOperator(nextOperator) {
+    const inputValue = Number(calculatorData.displayValue);
+
+    if (calculatorData.operator && calculatorData.waitingForSecondOperand) {
+      calculatorData.operator = nextOperator;
+      return;
+    }
+
+    if (calculatorData.firstOperand === null && !isNaN(inputValue)) {
+      calculatorData.firstOperand = inputValue;
+    }
+
+    if (calculatorData.operator) {
+      const result = calculate(
+        calculatorData.firstOperand,
+        inputValue,
+        calculatorData.operator
+      );
+      calculatorData.result = result;
+      calculatorData.displayValue = result;
+      calculatorData.firstOperand = result;
+    }
+
+    calculatorData.waitingForSecondOperand = true;
+    calculatorData.operator = nextOperator;
+    updateDisplay();
+  }
+
+  function calculate(firstNum, secondNum, operator) {
+    switch (operator) {
+      case '+':
+        return firstNum + secondNum;
+        break;
+      case '-':
+        return firstNum - secondNum;
+        break;
+      case '*':
+        return firstNum * secondNum;
+        break;
+      case '/':
+        return firstNum / secondNum;
+        break;
+      default:
+        break;
+    }
+    return secondNum;
+  }
+
+  function updateDisplay() {
+    output.innerText = calculatorData.displayValue;
+  }
+
+  function reset() {
+    calculatorData.displayValue = '0';
+    calculatorData.firstOperand = null;
+    calculatorData.waitingForSecondOperand = false;
+    calculatorData.operator = null;
+    calculationOutput.innerText = '';
+    calculatorData.calculationStr = '';
+    calculatorData.result = '';
+  }
+
+  function calculationDisplay(target) {
+    calculatorData.calculationStr += target.innerText.replace('=', '');
+    calculationOutput.innerText = calculatorData.calculationStr;
+  }
+
+  function handleEqual() {
+    if (calculatorData.calculationStr !== '=' && calculatorData.result !== '') {
+      calculatorData.calculationsLog.push(calculatorData.calculationStr);
+      calculatorData.resultsLog.push(calculatorData.result);
+    }
+    reset();
+  }
+
+  function updateJournal() {
+    calculatorData.calculationsLog.forEach((log, index) => {
+      journalOutput.innerHTML += `
+        <li><span>${log}</span> = <span>${calculatorData.resultsLog[index]}</span></li>
+    `;
+    });
+  }
+
+  updateDisplay();
+
+  calculator.addEventListener('click', (e) => {
+    const { target } = e;
+    const { innerText: btnValue } = target;
+
+    if (!target.classList.contains('calc__btn')) return;
+
+    if (target.classList.contains('number')) {
+      appendNumber(btnValue);
+      calculationDisplay(target);
+    }
+
+    if (target.classList.contains('operator')) {
+      calculationDisplay(target);
+      handleOperator(btnValue);
+    }
+
+    if (target.classList.contains('reset')) {
+      reset();
+      updateDisplay();
+    }
+
+    if (target.classList.contains('equal')) {
+      journalOutput.innerText = '';
+      handleEqual();
+      updateJournal();
+    }
+  });
+}
+
+lesson8();
