@@ -498,7 +498,9 @@ function lesson8() {
 
     if (calculatorData.firstOperand === null && !isNaN(inputValue)) {
       calculatorData.firstOperand = inputValue;
-    } else if (calculatorData.operator) {
+    }
+
+    if (calculatorData.operator) {
       const result = calculate(
         calculatorData.firstOperand,
         inputValue,
@@ -515,14 +517,21 @@ function lesson8() {
   }
 
   function calculate(firstNum, secondNum, operator) {
-    if (operator === '+') {
-      return firstNum + secondNum;
-    } else if (operator === '-') {
-      return firstNum - secondNum;
-    } else if (operator === '*') {
-      return firstNum * secondNum;
-    } else if (operator === '/') {
-      return firstNum / secondNum;
+    switch (operator) {
+      case '+':
+        return firstNum + secondNum;
+        break;
+      case '-':
+        return firstNum - secondNum;
+        break;
+      case '*':
+        return firstNum * secondNum;
+        break;
+      case '/':
+        return firstNum / secondNum;
+        break;
+      default:
+        break;
     }
     return secondNum;
   }
