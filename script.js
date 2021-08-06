@@ -602,4 +602,271 @@ function lesson8() {
   });
 }
 
-lesson8();
+// lesson8();
+
+function lesson9() {}
+const toDoContainer = document.querySelector('.lists');
+const newListForm = document.querySelector('.new-list');
+const inputNewList = document.querySelector('.new-list__input');
+const addListBtn = document.querySelector('.create__list');
+const listName = document.querySelector('.list-name');
+const selectedListContainer = document.querySelector('.tasks-container');
+const listTitle = document.querySelector('.tasks-title');
+const tasksCount = document.querySelector('.tasks-count');
+const tasks = document.querySelector('.tasks');
+const newTaskForm = document.querySelector('.new-task');
+const inputNewTask = document.querySelector('.new-task__input');
+const editTaskBtn = document.querySelector('.edit-task');
+const taskCheckbox = document.querySelector('.checkbox');
+const actions = document.querySelector('.actions');
+
+const todoContainersData = {
+  toDoContainer,
+  selectedListContainer,
+  listTitle,
+  tasksCount,
+  tasks,
+};
+
+class ToDoList {
+  constructor(containersData) {
+    this.data = containersData;
+    this.localStorageKey = 'lists';
+    this.localStorageSelectedListId = 'selectedListId';
+    this.lists = JSON.parse(localStorage.getItem(this.localStorageKey)) || [];
+    this.selectedListId = localStorage.getItem(this.localStorageSelectedListId);
+    this.renderListContainer(this.data.selectedContainer);
+    this.render();
+  }
+
+  clearContainer(element) {
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
+  }
+
+  createList(newList) {
+    return {
+      id: Date.now().toString(),
+      name: newList,
+      tasks: [],
+    };
+  }
+
+  saveList() {
+    localStorage.setItem(this.localStorageKey, JSON.stringify(this.lists));
+    localStorage.setItem(this.localStorageSelectedListId, this.selectedListId);
+  }
+
+  addNewList(value) {
+    newToDoList.renderList();
+    const newList = this.createList(value);
+    this.lists.push(newList);
+    this.renderListContainer();
+    this.render();
+  }
+
+  renderList() {
+    this.lists.forEach((list) => {
+      const listItem = document.createElement('li');
+      listItem.dataset.listId = list.id;
+      listItem.classList.add('list-item');
+      listItem.innerText = list.name;
+      if (this.selectedListId === list.id) {
+        listItem.classList.add('active-list');
+      }
+      this.data.toDoContainer.append(listItem);
+    });
+    this.renderListContainer();
+  }
+
+  selectedList() {
+    return this.lists.find((list) => list.id === this.selectedListId);
+  }
+
+  selectedTask(elementId) {
+    return this.selectedList().tasks.find(
+      (task) => elementId === String(task.id)
+    );
+  }
+
+  renderListContainer() {
+    if (this.selectedListId === 'null' || this.selectedListId === null) {
+      this.data.selectedListContainer.style.opacity = '0';
+    } else {
+      this.data.selectedListContainer.style.opacity = '1';
+      const selectedList = this.selectedList();
+
+      this.data.listTitle.innerText = selectedList.name;
+      this.renderTasksCount();
+    }
+  }
+
+  renderTasksCount() {
+    const remainingTasksCount = this.selectedList().tasks.filter(
+      (task) => !task.completed
+    ).length;
+
+    this.data.tasksCount.innerText =
+      remainingTasksCount === 0
+        ? 'No tasks'
+        : remainingTasksCount === 1
+        ? '1 task to do'
+        : `${remainingTasksCount} tasks to do`;
+  }
+
+  createTask(newTask) {
+    return { id: Date.now(), taskText: newTask, completed: false };
+  }
+
+  addNewTask(value) {
+    const newTask = this.createTask(value);
+    const selectedList = this.selectedList();
+
+    selectedList.tasks.push(newTask);
+    this.renderTasks();
+    this.renderTasksCount();
+    this.saveList();
+  }
+
+  renderTasks() {
+    this.clearContainer(this.data.tasks);
+    const selectedList = this.selectedList();
+    if (selectedList !== undefined) {
+      selectedList.tasks.forEach((task) => {
+        const taskElement = document.createElement('div');
+        const labelContainer = document.createElement('div');
+        const checkbox = document.createElement('input');
+        const label = document.createElement('label');
+        const btnEdit = document.createElement('button');
+        const btnDelete = document.createElement('button');
+        const actionsBox = document.createElement('div');
+
+        taskElement.classList.add('task');
+
+        checkbox.type = 'checkbox';
+        checkbox.dataset.taskId = `${task.id}`;
+        checkbox.classList.add('task-checkbox');
+        checkbox.checked = task.completed;
+
+        label.htmlFor = `${task.id}`;
+
+        actionsBox.classList.add('task__actions');
+
+        btnEdit.innerText = 'Edit';
+        btnEdit.classList.add('edit-task');
+        btnEdit.dataset.taskId = `${task.id}`;
+
+        btnDelete.innerText = 'X';
+        btnDelete.classList.add('delete-task');
+        btnDelete.dataset.taskId = `${task.id}`;
+
+        labelContainer.classList.add('label-input-container');
+        label.innerText = `${task.taskText}`;
+
+        taskElement.append(labelContainer);
+        taskElement.append(actionsBox);
+
+        labelContainer.append(checkbox);
+        labelContainer.append(label);
+
+        actionsBox.append(btnEdit);
+        actionsBox.append(btnDelete);
+
+        this.data.tasks.append(taskElement);
+      });
+    }
+  }
+
+  editTask(elementId, text) {
+    if (text === '' || text === null) return;
+    this.selectedTask(elementId).taskText = text;
+    this.render();
+  }
+
+  updateCheckbox(elementId) {
+    this.selectedTask(elementId).completed =
+      !this.selectedTask(elementId).completed;
+
+    this.render();
+  }
+
+  deleteTask(elementId) {
+    this.selectedList().tasks = this.selectedList().tasks.filter(
+      (task) => elementId !== String(task.id)
+    );
+    this.render();
+  }
+
+  deleteList() {
+    this.lists = this.lists.filter((list) => list.id !== this.selectedListId);
+    this.selectedListId = null;
+    this.renderListContainer(this.data.selectedListContainer);
+    this.render();
+  }
+
+  clearCompletedTasks() {
+    this.selectedList().tasks = this.selectedList().tasks.filter(
+      (task) => !task.completed
+    );
+    this.render();
+  }
+
+  render() {
+    this.clearContainer(this.data.toDoContainer);
+    this.saveList();
+    this.renderList();
+    this.renderTasks();
+  }
+}
+
+const newToDoList = new ToDoList(todoContainersData);
+
+newListForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  if (inputNewList.value === '') return;
+  newToDoList.addNewList(inputNewList.value);
+  inputNewList.value = '';
+});
+
+toDoContainer.addEventListener('click', (e) => {
+  if (e.target.tagName !== 'LI') return;
+  newToDoList.selectedListId = e.target.dataset.listId;
+  newToDoList.render();
+});
+
+newTaskForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  if (inputNewTask.value === '') return;
+
+  newToDoList.addNewTask(inputNewTask.value);
+  inputNewTask.value = '';
+});
+
+tasks.addEventListener('click', (e) => {
+  if (e.target.classList.contains('delete-task')) {
+    newToDoList.deleteTask(e.target.dataset.taskId);
+  }
+
+  if (e.target.classList.contains('edit-task')) {
+    const editedValue = prompt('Edit task', '');
+    newToDoList.editTask(e.target.dataset.taskId, editedValue);
+  }
+
+  if (e.target.classList.contains('task-checkbox')) {
+    newToDoList.updateCheckbox(e.target.dataset.taskId);
+  }
+});
+
+actions.addEventListener('click', (e) => {
+  if (e.target.classList.contains('delete-list')) {
+    newToDoList.deleteList();
+  }
+
+  if (e.target.classList.contains('delete-completed')) {
+    newToDoList.clearCompletedTasks();
+  }
+});
+
+lesson9();
