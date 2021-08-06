@@ -8,40 +8,59 @@
     <title>Document</title>
   </head>
   <body>
-    <div class="calc__wrapper">
-      <div class="calculator">
-        <div class="outputWrapper">
-          <div class="calculation"></div>
-          <div class="output"></div>
+    <h1 class="todo-title">Stuff to do</h1>
+    <div class="todo-container">
+      <div class="lists-container">
+        <h2 class="lists-header">My Todo Lists</h2>
+        <ul class="lists"></ul>
+
+        <form class="new-list" action="">
+          <input
+            type="text"
+            class="new new-list__input"
+            placeholder="add new list"
+            aria-label="new list name"
+          />
+          <button class="btn create new-list__btn" aria-label="create new list">
+            +
+          </button>
+        </form>
+      </div>
+
+      <div class="tasks-container">
+        <div class="tasks-header">
+          <h2 class="tasks-title"></h2>
+          <p class="tasks-count"></p>
         </div>
 
-        <button class="calc__btn number">7</button>
-        <button class="calc__btn number">8</button>
-        <button class="calc__btn number">9</button>
-        <button class="calc__btn operator plus">+</button>
+        <div class="tasks-container__inner">
+          <div class="tasks"></div>
 
-        <button class="calc__btn number">4</button>
-        <button class="calc__btn number">5</button>
-        <button class="calc__btn number">6</button>
-        <button class="calc__btn operator minus">-</button>
-
-        <button class="calc__btn number">1</button>
-        <button class="calc__btn number">2</button>
-        <button class="calc__btn number">3</button>
-
-        <button class="calc__btn operator multiply">*</button>
-
-        <button class="calc__btn number zero">0</button>
-        <button class="calc__btn number decimalDot">.</button>
-        <button class="calc__btn operator devide">/</button>
-        <button class="calc__btn reset">AC</button>
-        <button class="calc__btn operator equal">=</button>
-      </div>
-      <div class="logs">
-        <p>Calculation logs:</p>
-        <ol></ol>
+          <div class="new-task">
+            <form action="">
+              <input
+                type="text"
+                class="new task new-task__input"
+                placeholder="add task name"
+                aria-label="new task name"
+              />
+              <button
+                class="btn create new-task__btn"
+                aria-label="create new task"
+              >
+                +
+              </button>
+           <form action="">
+          </div>
+          <div class="actions">
+            <button class="btn delete delete-completed">
+              Clear completed tasks
+            </button>
+            <button class="btn delete delete-list">Delete list</button>
+          </div>
+        </div>
       </div>
     </div>
-    <script src="/script.js"></script>
+    <script src="script.js"></script>
   </body>
 </html>
